@@ -8,7 +8,7 @@ def featureL2Norm(feature):
     return torch.div(feature, norm)
 
 class mySelfCorrelationComputation(nn.Module):
-    def __init__(self, kernel_size=(3, 3), padding=1):
+    def __init__(self, kernel_size=(5, 5), padding=2):
         super(mySelfCorrelationComputation, self).__init__()
         planes =[512, 64, 64, 640]
         self.kernel_size = kernel_size
@@ -18,7 +18,7 @@ class mySelfCorrelationComputation(nn.Module):
         self.conv1x1_in = nn.Sequential(nn.Conv2d(planes[0], planes[1], kernel_size=1, bias=False, padding=0),
                                         nn.BatchNorm2d(planes[1]),
                                         nn.ReLU(inplace=True))
-        self.embeddingFea = nn.Sequential(nn.Conv2d(640, 512,
+        self.embeddingFea = nn.Sequential(nn.Conv2d(1664, 512,
                                                      kernel_size=1, bias=False, padding=0),
                                            nn.BatchNorm2d(512),
                                            nn.ReLU(inplace=True))
@@ -231,7 +231,7 @@ class ResNet(nn.Module):
         self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
         self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.scr_module = mySelfCorrelationComputation(kernel_size=(3, 3), padding=1)
+        self.scr_module = mySelfCorrelationComputation(kernel_size=(5, 5), padding=2)
         self.fc = nn.Linear(512, num_classes)
 
         for m in self.modules():
