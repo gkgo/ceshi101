@@ -6,8 +6,7 @@ from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
 import time
 from tqdm import tqdm
-from resnet import resnet18gai
-import torchvision
+from resnet import resnet18gai,resnet34
 
 # Set device to GPU if available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -22,23 +21,20 @@ transform = transforms.Compose(
 train_data = ImageFolder('caltech101/train', transform=transform)
 val_data = ImageFolder('caltech101/test', transform=transform)
 
-train_loader = DataLoader(train_data, batch_size=64, shuffle=True, num_workers=0)
-val_loader = DataLoader(val_data, batch_size=64, shuffle=False, num_workers=0)
+train_loader = DataLoader(train_data, batch_size=8, shuffle=True, num_workers=0)
+val_loader = DataLoader(val_data, batch_size=8, shuffle=False, num_workers=0)
 
 
-model = torchvision.models.resnet18(pretrained=False)
-num_features = model.fc.in_features
-model.fc = nn.Linear(num_features, len(train_data.classes))
-model = model.to(device)
+model = resnet18gai().to(device)
 
 
 # Define loss function and optimizer
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr =0.001,momentum=0.9,nesterov=True, weight_decay=0.0005)
-lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[60, 70], gamma=0.05)
+lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[30, 40], gamma=0.05)
 
 # Train the model
-num_epochs = 80
+num_epochs = 50
 best_acc = 0.0
 for epoch in range(num_epochs):
     train_loss = 0.0
@@ -82,10 +78,10 @@ for epoch in range(num_epochs):
                 tepoch.set_postfix(loss=val_loss/val_total, acc=val_correct/val_total)
 
     lr_scheduler.step()
-    end_time = time.time()
-    print(f"Epoch {epoch+1}/{num_epochs} took {end_time - start_time:.2f} seconds")
+    epoch_time = time.time() - start_time
     print(f"Train loss: {train_loss/train_total:.4f}, Train accuracy: {train_correct/train_total:.4f}")
     print(f"Validation loss: {val_loss/val_total:.4f}, Validation accuracy: {val_correct/val_total:.4f}")
+    print(f'[ log ] roughly {(num_epochs - epoch) / 3600. * epoch_time:.2f} h left\n')
     # Update best accuracy
     if val_correct / val_total > best_acc:
         best_acc = val_correct / val_total
