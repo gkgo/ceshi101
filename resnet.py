@@ -8,7 +8,7 @@ def featureL2Norm(feature):
     return torch.div(feature, norm)
 
 class mySelfCorrelationComputation(nn.Module):
-    def __init__(self, kernel_size=(5, 5), padding=2):
+    def __init__(self, kernel_size=(3, 3), padding=2):
         super(mySelfCorrelationComputation, self).__init__()
         planes =[640, 64, 64, 640]
         self.kernel_size = kernel_size
@@ -18,13 +18,13 @@ class mySelfCorrelationComputation(nn.Module):
         self.conv1x1_in = nn.Sequential(nn.Conv2d(planes[0], planes[1], kernel_size=1, bias=False, padding=0),
                                         nn.BatchNorm2d(planes[1]),
                                         nn.ReLU(inplace=True))
-        self.embeddingFea = nn.Sequential(nn.Conv2d(1664, 640,
+        self.embeddingFea = nn.Sequential(nn.Conv2d(640, 512,
                                                      kernel_size=1, bias=False, padding=0),
-                                           nn.BatchNorm2d(640),
+                                           nn.BatchNorm2d(512),
                                            nn.ReLU(inplace=True))
         self.conv1x1_out = nn.Sequential(
-            nn.Conv2d(640, 640, kernel_size=1, bias=False, padding=0),
-            nn.BatchNorm2d(640))
+            nn.Conv2d(512, 512, kernel_size=1, bias=False, padding=0),
+            nn.BatchNorm2d(512))
 
     def forward(self, x):
 
@@ -231,7 +231,7 @@ class ResNet(nn.Module):
         self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
         self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.scr_module = mySelfCorrelationComputation(kernel_size=(5, 5), padding=2)
+        self.scr_module = mySelfCorrelationComputation(kernel_size=(3, 3), padding=1)
         self.fc = nn.Linear(512, num_classes)
 
         for m in self.modules():
@@ -270,21 +270,21 @@ class ResNet(nn.Module):
         x = self.layer3(x)
         x = self.layer4(x)
 
-        x = self.avgpool(x)
-        x = x.view(x.size(0), -1)
-        x = self.fc(x)
-
-#         identity = x
-#         x = self.scr_module(x)
-
-
-#         x = x + identity
-#         x = F.relu(x, inplace=True)
-
-#         x = normalize_feature(x)
-
-#         x = x.mean(dim=[-1, -2])
+#         x = self.avgpool(x)
+#         x = x.view(x.size(0), -1)
 #         x = self.fc(x)
+
+        identity = x
+        x = self.scr_module(x)
+
+
+        x = x + identity
+        x = F.relu(x, inplace=True)
+
+        x = normalize_feature(x)
+
+        x = x.mean(dim=[-1, -2])
+        x = self.fc(x)
 
         return x
 
