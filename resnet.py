@@ -8,9 +8,9 @@ def featureL2Norm(feature):
     return torch.div(feature, norm)
 
 class mySelfCorrelationComputation(nn.Module):
-    def __init__(self, kernel_size=(3, 3), padding=2):
+    def __init__(self, kernel_size=(3, 3), padding=1):
         super(mySelfCorrelationComputation, self).__init__()
-        planes =[640, 64, 64, 640]
+        planes =[512, 64, 64, 640]
         self.kernel_size = kernel_size
         self.unfold = nn.Unfold(kernel_size=kernel_size, padding=padding)
         self.relu = nn.ReLU(inplace=False)
