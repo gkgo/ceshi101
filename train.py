@@ -21,8 +21,8 @@ transform = transforms.Compose(
 train_data = ImageFolder('caltech101/train', transform=transform)
 val_data = ImageFolder('caltech101/test', transform=transform)
 
-train_loader = DataLoader(train_data, batch_size=32, shuffle=True, num_workers=2)
-val_loader = DataLoader(val_data, batch_size=32, shuffle=False, num_workers=2)
+train_loader = DataLoader(train_data, batch_size=32, shuffle=True, num_workers=4)
+val_loader = DataLoader(val_data, batch_size=32, shuffle=False, num_workers=4)
 
 
 model = resnet18gai().to(device)
