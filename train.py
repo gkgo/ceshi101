@@ -31,10 +31,10 @@ model = resnet18gai().to(device)
 # Define loss function and optimizer
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(model.parameters(), lr =0.001,momentum=0.9,nesterov=True, weight_decay=0.0005)
-lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[30, 40], gamma=0.05)
+lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[60, 70], gamma=0.05)
 
 # Train the model
-num_epochs = 50
+num_epochs = 80
 best_acc = 0.0
 for epoch in range(num_epochs):
     train_loss = 0.0
