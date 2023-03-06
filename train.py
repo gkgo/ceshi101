@@ -7,6 +7,7 @@ from torchvision.datasets import ImageFolder
 import time
 from tqdm import tqdm
 from resnet import resnet18gai
+import torchvision
 
 # Set device to GPU if available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -25,7 +26,10 @@ train_loader = DataLoader(train_data, batch_size=64, shuffle=True, num_workers=0
 val_loader = DataLoader(val_data, batch_size=64, shuffle=False, num_workers=0)
 
 
-model = resnet18gai().to(device)
+model = torchvision.models.resnet18(pretrained=False)
+num_features = model.fc.in_features
+model.fc = nn.Linear(num_features, len(train_data.classes))
+model = model.to(device)
 
 
 # Define loss function and optimizer
