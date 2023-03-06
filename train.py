@@ -6,8 +6,7 @@ from torch.utils.data import DataLoader
 from torchvision.datasets import ImageFolder
 import time
 from tqdm import tqdm
-from conv import ConvNet4
-# from resnet import resnet12
+from resnet import resnet18gai
 
 # Set device to GPU if available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -19,23 +18,23 @@ transform = transforms.Compose(
      transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
 # Load data
-train_data = ImageFolder('caltech101/train', transform=transform)
-val_data = ImageFolder('caltech101/test', transform=transform)
+train_data = ImageFolder('data/caltech-101/train', transform=transform)
+val_data = ImageFolder('data/caltech-101/test', transform=transform)
 
-train_loader = DataLoader(train_data, batch_size=64, shuffle=True, num_workers=2)
-val_loader = DataLoader(val_data, batch_size=64, shuffle=False, num_workers=2)
+train_loader = DataLoader(train_data, batch_size=4, shuffle=True, num_workers=0)
+val_loader = DataLoader(val_data, batch_size=4, shuffle=False, num_workers=0)
 
-# Load pre-trained ResNet-18 model
-model = ConvNet4(num_classes=len(train_data.classes)).to(device)
-# model = resnet12().to(device)
+
+model = resnet18gai().to(device)
+
 
 # Define loss function and optimizer
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(model.parameters(), lr =0.01,momentum=0.9,nesterov=True, weight_decay=0.0005)
-lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[60, 70], gamma=0.05)
+optimizer = optim.SGD(model.parameters(), lr =0.001,momentum=0.9,nesterov=True, weight_decay=0.0005)
+lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[30, 40], gamma=0.05)
 
 # Train the model
-num_epochs = 80
+num_epochs = 50
 best_acc = 0.0
 for epoch in range(num_epochs):
     train_loss = 0.0
