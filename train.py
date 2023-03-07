@@ -18,8 +18,8 @@ transform = transforms.Compose(
      transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
 # Load data
-train_data = ImageFolder('data/caltech-101/train', transform=transform)
-val_data = ImageFolder('data/caltech-101/test', transform=transform)
+train_data = ImageFolder('caltech-101/train', transform=transform)
+val_data = ImageFolder('caltech-101/test', transform=transform)
 
 train_loader = DataLoader(train_data, batch_size=8, shuffle=True, num_workers=0)
 val_loader = DataLoader(val_data, batch_size=8, shuffle=False, num_workers=0)
