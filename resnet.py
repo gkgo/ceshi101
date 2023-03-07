@@ -57,7 +57,7 @@ class mySelfCorrelationComputation(nn.Module):
         # embed
         feature_embd = self.embeddingFea0(feature_cat)
         feature_embd = self.embeddingFea(feature_embd)
-        feature_embd = self.conv1x1_out(feature_embd)
+#         feature_embd = self.conv1x1_out(feature_embd)
         return feature_embd
 
 
