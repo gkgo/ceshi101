@@ -231,7 +231,8 @@ class ResNet(nn.Module):
         self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
         self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.scr_module = mySelfCorrelationComputation(kernel_size=(5, 5), padding=2)
+#         self.scr_module = mySelfCorrelationComputation(kernel_size=(5, 5), padding=2)
+        self.scr_module = cbam_block(channel=512) 
         self.fc = nn.Linear(512, num_classes)
 
         for m in self.modules():
