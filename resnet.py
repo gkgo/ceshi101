@@ -270,21 +270,21 @@ class ResNet(nn.Module):
         x = self.layer3(x)
         x = self.layer4(x)
 
-#         x = self.avgpool(x)
-#         x = x.view(x.size(0), -1)
-#         x = self.fc(x)
-
-        identity = x
-        x = self.scr_module(x)
-
-
-        x = x + identity
-        x = F.relu(x, inplace=True)
-
-        x = normalize_feature(x)
-
-        x = x.mean(dim=[-1, -2])
+        x = self.avgpool(x)
+        x = x.view(x.size(0), -1)
         x = self.fc(x)
+
+#         identity = x
+#         x = self.scr_module(x)
+
+
+#         x = x + identity
+#         x = F.relu(x, inplace=True)
+
+#         x = normalize_feature(x)
+
+#         x = x.mean(dim=[-1, -2])
+#         x = self.fc(x)
 
         return x
 
