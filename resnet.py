@@ -18,7 +18,11 @@ class mySelfCorrelationComputation(nn.Module):
         self.conv1x1_in = nn.Sequential(nn.Conv2d(planes[0], planes[1], kernel_size=1, bias=False, padding=0),
                                         nn.BatchNorm2d(planes[1]),
                                         nn.ReLU(inplace=True))
-        self.embeddingFea = nn.Sequential(nn.Conv2d(1664, 512,
+        self.embeddingFea0 = nn.Sequential(nn.Conv2d(1664, 1024,
+                                                     kernel_size=1, bias=False, padding=0),
+                                           nn.BatchNorm2d(1024),
+                                           nn.ReLU(inplace=True))
+        self.embeddingFea = nn.Sequential(nn.Conv2d(1024, 512,
                                                      kernel_size=1, bias=False, padding=0),
                                            nn.BatchNorm2d(512),
                                            nn.ReLU(inplace=True))
@@ -51,7 +55,8 @@ class mySelfCorrelationComputation(nn.Module):
         feature_cat = torch.cat([identity, feature_gs], 1)
 
         # embed
-        feature_embd = self.embeddingFea(feature_cat)
+        feature_embd = self.embeddingFea0(feature_cat)
+        feature_embd = self.embeddingFea(feature_embd)
         feature_embd = self.conv1x1_out(feature_embd)
         return feature_embd
 
