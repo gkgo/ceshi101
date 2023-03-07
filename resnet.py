@@ -274,17 +274,17 @@ class ResNet(nn.Module):
         x = x.view(x.size(0), -1)
         x = self.fc(x)
 
-#         identity = x
-#         x = self.scr_module(x)
+        identity = x
+        x = self.scr_module(x)
 
 
-#         x = x + identity
-#         x = F.relu(x, inplace=True)
+        x = x + identity
+        x = F.relu(x, inplace=True)
 
-#         x = normalize_feature(x)
+        x = normalize_feature(x)
 
-#         x = x.mean(dim=[-1, -2])
-#         x = self.fc(x)
+        x = x.mean(dim=[-1, -2])
+        x = self.fc(x)
 
         return x
 
