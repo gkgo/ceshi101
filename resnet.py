@@ -277,7 +277,7 @@ class ResNet(nn.Module):
 
 
         x = x + identity
-        x = F.relu(x, inplace=True)
+#         x = F.relu(x, inplace=True)
 
         x = self.avgpool(x)
         x = x.view(x.size(0), -1)
