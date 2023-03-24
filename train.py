@@ -38,7 +38,7 @@ val_loader = torch.utils.data.DataLoader(val_data,batch_size=128, shuffle=False,
 # Initialize model with SAM optimizer
 model = WideResNet(depth=16, width_factor=8, dropout=0.0, in_channels=3, labels=100).to(device)
 base_optimizer = optim.SGD
-optimizer = SAM(model.parameters(), base_optimizer,rho=2.0, lr=0.1, momentum=0.9,weight_decay=0.0005)
+optimizer = SAM(model.parameters(), base_optimizer, lr=0.1, momentum=0.9,weight_decay=0.0005)
 lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer.base_optimizer, milestones=[30,40], gamma=0.05)
 # Define loss function
 criterion = nn.CrossEntropyLoss()
