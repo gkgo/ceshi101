@@ -15,19 +15,19 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 # Load data
-train_data = torchvision.datasets.CIFAR100('./dataset',
+train_data = torchvision.datasets.CIFAR100('./',
                     transform=transforms.Compose([
     transforms.RandomCrop(32, padding=4),
     transforms.RandomHorizontalFlip(),
     transforms.RandomRotation(15),
     transforms.ToTensor(),
     transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)),
-]), download=False)
+]), download=True)
 train_loader = torch.utils.data.DataLoader(train_data, batch_size=128, shuffle=True,num_workers=0)
-val_data = torchvision.datasets.CIFAR100('./dataset',transform=transforms.Compose([
+val_data = torchvision.datasets.CIFAR100('./',transform=transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)),
-]),  train=False, download=False)
+]),  train=False, download=True)
 val_loader = torch.utils.data.DataLoader(val_data,batch_size=128, shuffle=False, num_workers=0)
 
 
