@@ -92,7 +92,6 @@ class WideResNet(nn.Module):
     def forward(self, x):
         return self.f(x)
 
-    import torch
 
 
 class SAM(torch.optim.Optimizer):
