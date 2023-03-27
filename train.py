@@ -8,7 +8,7 @@ from torchvision import datasets, transforms
 import time
 from torchvision.datasets import ImageFolder
 from tqdm import tqdm  # 添加进度条库
-from vit_pytorch.efficient import ViT
+from res import ViT
 from linformer import Linformer
 GPU = torch.cuda.is_available()
 
