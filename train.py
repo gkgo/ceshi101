@@ -8,9 +8,12 @@ from torchvision import datasets, transforms
 import time
 from torchvision.datasets import ImageFolder
 from tqdm import tqdm  # 添加进度条库
-from res import ViT
-from linformer import Linformer
+from conv import ConvNet4
+
+
 GPU = torch.cuda.is_available()
+
+
 
 def train(epoch, model, device, train_loader, optimizer):
     model.train()
@@ -54,42 +57,30 @@ def test(model, device, test_loader):
 def main():
     device = torch.device("cuda" if GPU else "cpu")
 
-    train_data = torchvision.datasets.CIFAR100('./',
+
+    train_data = torchvision.datasets.CIFAR10('./',
                                                transform=transforms.Compose([
-                                                   transforms.RandomCrop(32, padding=4),
-                                                   transforms.RandomHorizontalFlip(),
-                                                   transforms.RandomRotation(15),
-                                                   transforms.ToTensor(),
-                                                   transforms.Normalize((0.5071, 0.4867, 0.4408),
-                                                                        (0.2675, 0.2565, 0.2761)),
-                                               ]), download=True)
-    train_loader = torch.utils.data.DataLoader(train_data, batch_size=128, shuffle=True, num_workers=0)
-    val_data = torchvision.datasets.CIFAR100('./', transform=transforms.Compose([
+        transforms.RandomCrop(32, padding=4),
+        transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
-        transforms.Normalize((0.5071, 0.4867, 0.4408), (0.2675, 0.2565, 0.2761)),
+        transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
+    ]), download=True)
+    train_loader = torch.utils.data.DataLoader(train_data, batch_size=128, shuffle=True, num_workers=0)
+    val_data = torchvision.datasets.CIFAR10('./', transform=transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
     ]), train=False, download=True)
     val_loader = torch.utils.data.DataLoader(val_data, batch_size=128, shuffle=False, num_workers=0)
-    efficient_transformer = Linformer(
-        dim=512,
-        seq_len=64 + 1,  # 7x7 patches + 1 cls-token
-        depth=12,
-        heads=8,
-        k=64
-    )
-    # model = WideResNet(depth=16, width_factor=8, dropout=0.0, in_channels=3, labels=100).to(device)
-    model = ViT(
-        dim=512,
-        image_size=32,
-        patch_size=4,
-        num_classes=100,
-        transformer=efficient_transformer,
-        channels=3,
-    ).to(device)
-    optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9, nesterov=True, weight_decay=0.0005)
-    lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[30, 40], gamma=0.05)
+    # model = torchvision.models.resnet18(pretrained=True)
+    model = ConvNet4(num_classes=10).to(device)
+    # model = UPANets(16, 100, 1, 32).to(device)
+    # model = resnet12().to(device)
+
+    optimizer = optim.SGD(model.parameters(), lr=0.1, momentum=0.9, nesterov=True, weight_decay=0.0005)
+    lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[60, 70], gamma=0.05)
     best_acc = 0.0
 
-    for epoch in range(50):
+    for epoch in range(80):
         start_time = time.time()
         train(epoch, model, device, train_loader, optimizer)
         test_acc = test(model, device, val_loader)
@@ -97,7 +88,7 @@ def main():
         epoch_time = time.time() - start_time
         if test_acc > best_acc:
             best_acc = test_acc
-        print(f'[ log ] roughly {(50 - epoch) / 3600. * epoch_time:.2f} h left\n')
+        print(f'[ log ] roughly {(80 - epoch) / 3600. * epoch_time:.2f} h left')
         print(f"Best Accuracy: {best_acc:.2f}%")
 
 
