@@ -121,15 +121,15 @@ class ResNet(nn.Module):
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
         self.fc = nn.Linear(640, num_classes)
         self.scr_module0 = mySelfCorrelationComputation(channel=64,kernel_size=(1, 1), padding=0)
-        self.scr_module1 = mySelfCorrelationComputation(channel=128, kernel_size=(1, 1), padding=0)
-        self.scr_module2 = mySelfCorrelationComputation(channel=256, kernel_size=(1, 1), padding=0)
+        self.scr_module1 = mySelfCorrelationComputation(channel=160, kernel_size=(1, 1), padding=0)
+        self.scr_module2 = mySelfCorrelationComputation(channel=320, kernel_size=(1, 1), padding=0)
         self.scr_module = mySelfCorrelationComputation(channel=640,kernel_size=(1, 1), padding=0)
         self.relu = nn.LeakyReLU(0.1)
         self.maxpool = nn.MaxPool2d(1)
         # self.scr_module = cbam_block(channel=640)
         # self.scr_module = SqueezeExcitation(channel=640)
         self.conv1x1_out = nn.Sequential(
-            nn.Conv2d(1024, 640, kernel_size=1, bias=False, padding=0),
+            nn.Conv2d(1120, 640, kernel_size=1, bias=False, padding=0),
             nn.BatchNorm2d(640))
 
         for m in self.modules():
