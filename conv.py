@@ -229,10 +229,11 @@ class ConvNet4(nn.Module):
         out4_s = self.scr_module(out4)
         out4 = out4 + out4_s
         out4 = self.relu(out4)
+
 #___________________________________________________________
-        out2 = F.max_pool2d(out2, out2.size()[2:])
-        out3 = F.max_pool2d(out3, out3.size()[2:])
-        out4 = F.max_pool2d(out4, out4.size()[2:])
+        out2 = F.avg_pool2d(out2, out2.size()[2:])
+        out3 = F.avg_pool2d(out3, out3.size()[2:])
+        out4 = F.avg_pool2d(out4, out4.size()[2:])
 
         out2 = F.layer_norm(out2, out2.size()[1:])
         out3 = F.layer_norm(out3, out3.size()[1:])
@@ -242,7 +243,11 @@ class ConvNet4(nn.Module):
         out = self.conv1x1_out(out)
         out = self.relu(out)
         out = self.maxpool(out)
-_________________________________________
+
+        # out = out.view(out.size(0), -1)
+        # out = self.bn(out)  # please exclude when using the test function
+        # x = self.linear(out)
+#__________________________________________
         x = self.avgpool(out)
         x = x.view(x.size(0), -1)
         x = self.fc(x)
