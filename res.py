@@ -201,44 +201,51 @@ class ResNet(nn.Module):
         x = self.bn1(x)
         x = self.relu(x)
         x = self.maxpool1(x)
-
         out1 = self.layer1(x)
-        out1_s = self.scr_module0(out1)
-        out1_s = self.maxpool(out1_s)
-        out1 = out1 + out1_s
-
 
         out2 = self.layer2(out1)
-        out2_s = self.scr_module1(out2)
-        out2_s = self.maxpool(out2_s)
-        out2 = out2 + out2_s
-
 
         out3 = self.layer3(out2)
-        out3_s = self.scr_module2(out3)
-        out3_s = self.maxpool(out3_s)
-        out3 = out3 + out3_s
+
+        out = self.layer4(out3)
+
+#         out1 = self.layer1(x)
+#         out1_s = self.scr_module0(out1)
+#         out1_s = self.maxpool(out1_s)
+#         out1 = out1 + out1_s
 
 
-        out4 = self.layer4(out3)
-        out4_s = self.scr_module(out4)
-        out4_s = self.maxpool(out4_s)
-        out4 = out4 + out4_s
+#         out2 = self.layer2(out1)
+#         out2_s = self.scr_module1(out2)
+#         out2_s = self.maxpool(out2_s)
+#         out2 = out2 + out2_s
+
+
+#         out3 = self.layer3(out2)
+#         out3_s = self.scr_module2(out3)
+#         out3_s = self.maxpool(out3_s)
+#         out3 = out3 + out3_s
+
+
+#         out4 = self.layer4(out3)
+#         out4_s = self.scr_module(out4)
+#         out4_s = self.maxpool(out4_s)
+#         out4 = out4 + out4_s
 
 
         # ___________________________________________________________
-        out2 = F.avg_pool2d(out2, out2.size()[2:])
-        out3 = F.avg_pool2d(out3, out3.size()[2:])
-        out4 = F.avg_pool2d(out4, out4.size()[2:])
+#         out2 = F.avg_pool2d(out2, out2.size()[2:])
+#         out3 = F.avg_pool2d(out3, out3.size()[2:])
+#         out4 = F.avg_pool2d(out4, out4.size()[2:])
 
-        out2 = F.layer_norm(out2, out2.size()[1:])
-        out3 = F.layer_norm(out3, out3.size()[1:])
-        out4 = F.layer_norm(out4, out4.size()[1:])
+#         out2 = F.layer_norm(out2, out2.size()[1:])
+#         out3 = F.layer_norm(out3, out3.size()[1:])
+#         out4 = F.layer_norm(out4, out4.size()[1:])
 
-        out = torch.cat([out4, out3, out2], 1)
-        out = self.conv1x1_out(out)
-        out = self.relu(out)
-        out = self.maxpool(out)
+#         out = torch.cat([out4, out3, out2], 1)
+#         out = self.conv1x1_out(out)
+#         out = self.relu(out)
+#         out = self.maxpool(out)
 
         # __________________________________________
         x = self.avgpool(out)
