@@ -8,7 +8,7 @@ from torchvision import datasets, transforms
 import time
 from torchvision.datasets import ImageFolder
 from tqdm import tqdm  # 添加进度条库
-from resnet import resnet12
+from res import resnet18gai
 
 
 GPU = torch.cuda.is_available()
@@ -74,7 +74,8 @@ def main():
     # model = torchvision.models.resnet18(pretrained=True)
 #     model = ConvNet4(num_classes=10).to(device)
     # model = UPANets(16, 100, 1, 32).to(device)
-    model = resnet12().to(device)
+#     model = resnet12().to(device)
+    model = resnet18gai().to(device)
 
     optimizer = optim.SGD(model.parameters(), lr=0.1, momentum=0.9, nesterov=True, weight_decay=0.0005)
     lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[60, 70], gamma=0.05)
